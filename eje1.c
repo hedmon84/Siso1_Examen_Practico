@@ -1,5 +1,7 @@
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 struct thread_data
 {
@@ -9,8 +11,8 @@ struct thread_data
     int factorial;
 };
 int i;
-void *suma(void *param);
-void *factorial(void *param);
+void *suma(void *data);
+void *fact(void *data);
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            pthread_create(&threads[i], &attrs[i], factorial, &t_data[i]);
+            pthread_create(&threads[i], &attrs[i], fact, &t_data[i]);
         }
     }
 
@@ -54,10 +56,10 @@ int main(int argc, char *argv[])
     }
 }
 
-void *suma(void *param)
+void *suma(void *data)
 {
     struct thread_data *my_data;
-    my_data = (struct thread_data *)param;
+    my_data = (struct thread_data *)data;
 
     int i, upper = my_data->num;
     my_data->suma = 0;
@@ -76,21 +78,21 @@ void *suma(void *param)
     pthread_exit(0);
 }
 
-void *factorial(void *param)
+void *fact(void *data)
 {
-    struct thread_data *my_data;
-    my_data = (struct thread_data *)param;
+    struct thread_data *Mdat;
+    Mdat = (struct thread_data *)data;
 
-    int i, upper = my_data->num;
-    my_data->factorial = 1;
+    int i, upper = Mdat->num;
+    Mdat->factorial = 1;
 
-    printf("Thread %d\n", my_data->id);
+    printf("Thread %d\n", Mdat->id);
     if (upper > 0)
     {
         for (i = 1; i <= upper; i++)
         {
-            my_data->factorial *= i;
-            printf("Thread %d, Factorial %d\n", my_data->id, my_data->factorial);
+            Mdat->factorial *= i;
+            printf("Thread %d, Factorial %d\n", Mdat->id, Mdat->factorial);
             usleep(10000);
         }
     }
